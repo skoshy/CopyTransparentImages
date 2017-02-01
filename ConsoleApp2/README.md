@@ -1,0 +1,20 @@
+# Copy Transparent Images (from Chrome)
+
+I made this script to easily copy transparent images from Chrome while still retaining transparency information from the image.
+
+Normally, copying a transparent image from Chrome and pasting it to GIMP/Photoshop results in a black background where transparency should be. Running this script fixes that.
+
+## How to Use
+
+Simply run the script after copying an image to the clipboard.
+
+## Example
+
+This GIF shows how copying a transparent image results in a black image, but after running this script, it pastes normally.
+
+![Example](http://i.imgur.com/Y68iJpD.gif)
+
+## Exit Codes
+
+- 0 for success
+- 1 for failure
