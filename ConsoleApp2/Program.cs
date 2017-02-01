@@ -17,86 +17,67 @@ namespace ConsoleApp2
         [STAThread]
         static void Main(string[] args)
         {
-            IDataObject data;
-            data = Clipboard.GetDataObject();
+            IDataObject clipboardData;
+            clipboardData = Clipboard.GetDataObject();
 
-            String[] allFormats = data.GetFormats();
+            // print out a list of the formats currently on the clipboard
+            string formatList = GetFormatList(clipboardData);
+            Console.WriteLine(formatList);
 
-            Console.WriteLine(data.GetData("Text") as string);
+            bool success = CopyTransparentImageToClipboard(); // main part of script
+            if (success)
+                Console.WriteLine("Successful!");
+            else
+                Console.WriteLine("Unsucessful");
 
-            string theResult = "The format(s) associated with the data are: " + '\n';
-            for (int i = 0; i < allFormats.Length; i++)
-                theResult += allFormats[i] + '\n';
+            Console.ReadKey(); // pause execution of script
+        }
 
-            Console.WriteLine(theResult);
-            string path = @"C:\Users\skoshy\test2.png";
-
+        // returns true/false if successful/unsuccessful
+        public static bool CopyTransparentImageToClipboard()
+        {
+            // Parse in the image from the clipboard
             Image img = GetImageFromClipboard();
-            img.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipX);
-            img.Save(path);
-            Clipboard.SetImage(img);
+            if (img == null)
+                return false;
 
+            img.RotateFlip(System.Drawing.RotateFlipType.Rotate180FlipX); // gotta rotate it for some reason
 
-            /*
-            if (data.GetFormats().Contains("Format17"))
+            using (var ms = new MemoryStream())
             {
-                byte[] datab;
-                using (MemoryStream ms = (System.IO.MemoryStream)data.GetData("Format17"))
-                {
-                    datab = ms.ToArray();
-                }
-                Bitmap img = CF_DIBV5ToBitmap(datab);
+                img.Save(ms, ImageFormat.Png);
 
-                Console.WriteLine(img);
-                Clipboard.SetImage(img);
-                //img.Save(path);
-            }
-            */
+                IDataObject dataObj = new DataObject();
+                dataObj.SetData("PNG", ms);
+                dataObj.SetData(DataFormats.Dib, Clipboard.GetData(DataFormats.Dib));
+                dataObj.SetData("Format17", Clipboard.GetData("Format17"));
+                dataObj.SetData("Bitmap", Clipboard.GetData("Bitmap"));
 
-
-            /*
-            var frame = (BitmapFrame) BitmapHandling.ImageFromClipboardDib();
-            using (var stream = File.OpenWrite(path))
-            {
-                var encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(frame);
-                encoder.Save(stream);
-            }
-            */
-
-            /*
-
-            MemoryStream bpStream = (MemoryStream) data.GetData("DeviceIndependentBitmap");
-
-            Byte[] bytes = bpStream.ToArray();
-            IntPtr unmanagedPointer = Marshal.AllocHGlobal(bytes.Length);
-            Marshal.Copy(bytes, 0, unmanagedPointer, bytes.Length);
-            // Call unmanaged code
-            
-            Bitmap bitmap;
-            bitmap = DibToBitmap.Convert(unmanagedPointer);
-
-            Marshal.FreeHGlobal(unmanagedPointer); // free up memory
-
-            */
-
-            /*
-            bitmap = new Bitmap(bpStream);
-
-            
-            Console.WriteLine(bpStream);
-
-            byte[] result = null;
-            using (MemoryStream stream = new MemoryStream())
-            {
-                bitmap.Save(stream, ImageFormat.Png);
-                result = stream.ToArray();
+                System.Windows.Forms.Clipboard.SetDataObject(dataObj, true);
             }
 
-            Console.WriteLine(result);
-            */
+            return true;
+        }
 
-            Console.ReadKey();
+        public static string GetFormatList(IDataObject clipboardData)
+        {
+            string separator = "---------";
+            String[] allFormats = clipboardData.GetFormats();
+            string theResult;
+
+            if (allFormats.Length == 0)
+            {
+                theResult = "Nothing in Clipboard\n";
+            }
+            else
+            {
+                theResult = "Clipboard Format(s):\n" + separator + "\n";
+                for (int i = 0; i < allFormats.Length; i++)
+                    theResult += allFormats[i] + "\n";
+                theResult += separator + "\n";
+            }
+
+            return theResult;
         }
 
         public static Image GetImageFromClipboard()
@@ -125,6 +106,7 @@ namespace ConsoleApp2
                     }
                 }
             }
+
             return Clipboard.ContainsImage() ? Clipboard.GetImage() : null;
         }
 
