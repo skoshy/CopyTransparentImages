@@ -14,6 +14,10 @@ This GIF shows how copying a transparent image results in a black image, but aft
 
 ![Example](http://i.imgur.com/Y68iJpD.gif)
 
+## Download
+
+You can download a built version from [the release page](https://github.com/skoshy/CopyTransparentImages/releases).
+
 ## Exit Codes
 
 - 0 for success
