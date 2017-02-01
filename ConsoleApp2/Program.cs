@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
@@ -8,7 +7,6 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
-using System.Windows.Media.Imaging;
 
 namespace ConsoleApp2
 {
@@ -26,11 +24,9 @@ namespace ConsoleApp2
 
             bool success = CopyTransparentImageToClipboard(); // main part of script
             if (success)
-                Console.WriteLine("Successful!");
+                Environment.Exit(0);
             else
-                Console.WriteLine("Unsucessful");
-
-            Console.ReadKey(); // pause execution of script
+                Environment.Exit(1);
         }
 
         // returns true/false if successful/unsuccessful
