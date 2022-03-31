@@ -1,5 +1,7 @@
 # Copy Transparent Images (from Chrome)
 
+> NOTE: This repo will be archived as of 2022-03-31, as copying transparent images seems to work by default on Windows 11 with both Chrome and Firefox without need for this script. Feel free to fork it if you need it for any reason.
+
 I made this script to easily copy transparent images from Chrome while still retaining transparency information from the image.
 
 Normally, copying a transparent image from Chrome and pasting it to GIMP/Photoshop results in a black background where transparency should be. Running this script fixes that.
